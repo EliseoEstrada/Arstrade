@@ -10,12 +10,14 @@ const router = express.Router();
 //RUTAS GENERALES /
 
 //Obtener posts
-router.get('/', (req, res, next) => {
+/*bd
+router.get('/', async (req, res, next) => {
 
   try{
 
-    const { size } = req.query
-    const posts = service.find(size || 10)  //si no existe size colocar 10
+    const { size } = req.query;
+    const { filter } = req.body;
+    const posts = await service.findDB(size || 10, filter);  //si no existe size colocar 10
 
     res.json({
       "success": true,
@@ -24,6 +26,30 @@ router.get('/', (req, res, next) => {
     });
 
   }
+
+  catch(error)
+  {
+    next(error);
+  }
+
+});
+*/
+
+router.get('/', (req, res, next) => {
+
+  try{
+
+    const { size } = req.query;
+    const posts = service.find(size || 10);
+
+    res.json({
+      "success": true,
+      "message": 'Post obtenidos',
+      "data": posts
+    });
+
+  }
+
   catch(error)
   {
     next(error);
@@ -50,6 +76,26 @@ router.post('/', validatorHandler(createPostDto, 'body'), (req, res) => {
 
 
 //Obtener post por ID
+/*bd
+router.get('/:id', validatorHandler(postByIdDto, 'params'), async (req, res, next) => {
+
+  try{
+    //params obtiene los parametros de la url
+    const { id } = req.params;
+    //const post = service.findOne(id);
+    const post = await service.findOneDB(id);
+    res.json({
+      "success": true,
+      "message": 'Post obtenido con exito',
+      "data": post
+    });
+  }
+  catch(error)
+  {
+    next(error);
+  }
+});
+*/
 router.get('/:id', validatorHandler(postByIdDto, 'params'), (req, res, next) => {
 
   try{

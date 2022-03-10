@@ -1,6 +1,9 @@
 const faker = require('faker');
 const boom = require('@hapi/boom');
+const PostModel = require('../models/post.model');
 
+const notFoundCatalog = "No se encontro el catalogo solicitado";
+const notFoundRegister = "No se encontro ningun registro";
 
 class PostService {
 
@@ -25,7 +28,11 @@ class PostService {
 
   find(size){
     const posts = this.posts.filter((item, index) => item && index < size);
-    if(!posts || posts.length <= 0){
+
+    if(!posts){
+      throw boom.notFound('No se encontro el catalogo solicitado');
+    }
+    if(posts.length <= 0){
       throw boom.notFound('No hay posts creados');
     }
     return posts;
@@ -95,6 +102,90 @@ class PostService {
     var currentPost = this.posts[index];
     this.posts.splice(index, 1);
     return currentPost;
+  }
+
+  //BD METHODS
+  async findDB(limit, filter){
+    let postsDB = await PostModel.find(filter);
+
+    if(!postsDB){
+      throw boom.notFound(notFoundCatalog);
+    }
+    if(postsDB.length <= 0){
+      throw boom.notFound('No hay posts creados');
+    }
+
+    postsDB = limit ? postsDB.filter((item, index) => item && index < limit ) : postsDB;
+    return postsDB;
+  }
+
+  async createDB(data){
+    const model = new PostModel(data);
+    await model.save();
+    return data;
+  }
+
+  async findOneDB(id){
+
+    var regexTextId = ""
+
+    //const post = this.posts.find((item) => item.id === id);
+    const post = await PostModel.findOne({
+      _id:id
+    });
+
+    if(post == undefined || post == null){
+      throw boom.notFound(notFoundCatalog);
+    }
+    if(post.length <= 0){
+      throw boom.notFound(notFoundRegister);
+    }
+
+    return post;
+  }
+
+  async updateDB(id, changes){
+    let post = await PostModel.findOne({
+      _id:id
+    });
+
+    if(post == undefined || post == null){
+      throw boom.notFound(notFoundCatalog);
+    }
+    if(post.length <= 0){
+      throw boom.notFound(notFoundRegister);
+    }
+
+    let postOriginal = {
+      title: post.title
+    };
+
+    const { title } = changes;
+    post.title = title;
+    post.save();
+
+    return {
+      original: postOriginal,
+      updated: post
+    }
+
+  }
+
+  async deleteDB(id){
+    let post = await PostModel.findOne({
+      _id:id
+    });
+
+
+    const { deletedCount } = await PostModel.deleteOne({
+      _id: id
+    });
+
+    if(deletedCount <= 0){
+      throw boom.notFound('No existe el registro');
+    }
+
+    return post;
   }
 }
 

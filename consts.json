@@ -1,0 +1,3 @@
+{
+  "dbconnection" : "mongodb+srv://admin:1663184@cluster0.knulq.mongodb.net/artstrade?retryWrites=true&w=majority"
+}

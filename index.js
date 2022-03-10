@@ -2,8 +2,13 @@ const express = require('express');
 const routerApi = require('./routes');
 const {logErrors, boomErrorHandler, errorHandler} = require('./middlewares/error.handler');
 
+const db = require('./db');
+const { dbconnection } = require('./consts.json');
+
 const app = express();
 const port = 3000;
+
+db(dbconnection);
 
 //Definir a la app que se utilizara JSON como formato de datos
 app.use(express.json());
