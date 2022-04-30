@@ -10,7 +10,7 @@ const router = express.Router();
 //RUTAS GENERALES /
 
 //Obtener posts
-/*bd
+//bd
 router.get('/', async (req, res, next) => {
 
   try{
@@ -33,8 +33,9 @@ router.get('/', async (req, res, next) => {
   }
 
 });
-*/
 
+
+/*
 router.get('/', (req, res, next) => {
 
   try{
@@ -56,7 +57,7 @@ router.get('/', (req, res, next) => {
   }
 
 });
-
+*/
 
 //Crear nuevo post
 router.post('/', validatorHandler(createPostDto, 'body'), (req, res) => {
