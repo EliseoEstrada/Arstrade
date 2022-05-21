@@ -1,3 +1,4 @@
+//const { string, date } = require('joi');
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
@@ -6,8 +7,13 @@ const Schema = mongoose.Schema;
 const postSchema = new Schema({
   id: String,
   title: String,
-  category: String
+  username: String,
+  image: String,
+  category: String,
+  date: Date
 });
 
 const model = mongoose.model('posts', postSchema);
 module.exports = model;
+
+//https://mongoosejs.com/docs/queries.html

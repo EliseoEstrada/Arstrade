@@ -120,6 +120,7 @@ class PostService {
   }
 
   async createDB(data){
+    console.log(data)
     const model = new PostModel(data);
     await model.save();
     return data;
@@ -143,6 +144,7 @@ class PostService {
 
     return post;
   }
+
 
   async updateDB(id, changes){
     let post = await PostModel.findOne({
@@ -175,7 +177,6 @@ class PostService {
     let post = await PostModel.findOne({
       _id:id
     });
-
 
     const { deletedCount } = await PostModel.deleteOne({
       _id: id

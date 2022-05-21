@@ -6,10 +6,10 @@ const title = joi.string().min(5);
 const username = joi.string();
 const image = joi.string();
 const category = joi.string();
-const date = joi.string();
+const date = joi.date();
 
-const name = joi.string().alphanum().min(3).max(15);
-const price = joi.number().integer().min(10);
+//const name = joi.string().alphanum().min(3).max(15);
+//const price = joi.number().integer().min(10);
 
 
 const createPostDto = joi.object({
@@ -22,7 +22,6 @@ const createPostDto = joi.object({
 
 const updatePostDto = joi.object({
   title: title.required(),
-  username: username.required(),
   image: image,
   category: category,
 });

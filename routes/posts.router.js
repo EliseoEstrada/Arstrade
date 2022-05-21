@@ -7,10 +7,11 @@ const { createPostDto, updatePostDto, postByIdDto } = require('../dtos/posts.dto
 
 const router = express.Router();
 
-//RUTAS GENERALES /
+////////////////////////////////////////////////////
+//                 RUTAS GENERALES                //
+////////////////////////////////////////////////////
 
 //Obtener posts
-//bd
 router.get('/', async (req, res, next) => {
 
   try{
@@ -60,24 +61,32 @@ router.get('/', (req, res, next) => {
 */
 
 //Crear nuevo post
-router.post('/', validatorHandler(createPostDto, 'body'), (req, res) => {
-  //body obtiene todos los datos ingresados por el usuario
-  const body = req.body;
-  const posts = service.create(body);
+router.post('/',  validatorHandler(createPostDto, 'body'), async (req, res) => {
+  try{
 
-  res.json({
-    "success": true,
-    "message": "post creado con exito",
-    "data": posts
-  });
+    //body obtiene todos los datos ingresados por el usuario
+    const body = req.body;
+    const post = await service.createDB(body);
+
+    res.json({
+      "success": true,
+      "message": "post creado con exito",
+      "data": post
+    });
+
+  }catch(error){
+    next(error);
+  }
+
 });
 
 
-//RUTAS ESPECIFICAS /:id
+////////////////////////////////////////////////////
+//                 RUTAS ESPECIFICAS /:id         //
+////////////////////////////////////////////////////
 
 
 //Obtener post por ID
-/*bd
 router.get('/:id', validatorHandler(postByIdDto, 'params'), async (req, res, next) => {
 
   try{
@@ -96,7 +105,8 @@ router.get('/:id', validatorHandler(postByIdDto, 'params'), async (req, res, nex
     next(error);
   }
 });
-*/
+
+/*
 router.get('/:id', validatorHandler(postByIdDto, 'params'), (req, res, next) => {
 
   try{
@@ -114,7 +124,7 @@ router.get('/:id', validatorHandler(postByIdDto, 'params'), (req, res, next) => 
     next(error);
   }
 });
-
+*/
 
 //Obtener post por usuario
 router.get('/user/:username', (req, res, next) => {
@@ -158,13 +168,13 @@ router.get('/category/:category', (req, res, next) => {
 
 
 //Actualizar post
-router.patch('/:id', validatorHandler(updatePostDto, 'body'), (req, res, next) => {
+router.patch('/:id', validatorHandler(updatePostDto, 'body'), async (req, res, next) => {
 
   try{
     const {id} = req.params;
     const body = req.body;
 
-    const {original, updated} = service.update(id, body);
+    const {original, updated} = await service.updateDB(id, body);
     res.json({
       "success": true,
       "message": "post actualizado con exito",
@@ -182,11 +192,11 @@ router.patch('/:id', validatorHandler(updatePostDto, 'body'), (req, res, next) =
 
 
 //Borrar post
-router.delete('/:id',validatorHandler(postByIdDto, 'params'), (req, res, next) => {
+router.delete('/:id',validatorHandler(postByIdDto, 'params'), async (req, res, next) => {
 
   try{
     const {id} = req.params;
-    const post = service.delete(id);
+    const post = await service.deleteDB(id);
     res.json({
       "success": true,
       "message": "post eliminado con exito",
